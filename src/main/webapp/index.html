@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<meta http-equiv="Content-Type" content="application/json; charset=utf-8">
+<title>Registro Personas</title>
+<link href="../css/bootstrap.css" rel="stylesheet"th:href="@{/css/bootstrap.css}">
+</head>
+<body>
+<br>
+<br>
+	<div class="container">
+	<h1 align="center">Registro Personas</h1>
+	<br>
+<br>
+		<form id="formulario" class="form-group">
+			<div class="form-group">
+				<label for="nombre">Nombre</label>
+				<input type="text" class="form-control" id= "nombre" name="nombre">
+			</div>
+			<div class="form-group">
+				<label for="apellido">Apellido</label>
+				<input type="text" class="form-control" id= "apellido" name="apellido">
+			</div>
+			<br>	
+			<button  type="submit" class="btn btn-success" > Guardar </button>
+			<input type="button" class="btn btn-info" value="Consultar Tabla" onClick="location.href='http://localhost:8080/cosulta.html	'">
+			<input type="hidden" id="procesado" name="procesado" value="false">
+		</form>		
+	</div>
+	
+<script>
+ $("#formulario").submit(function(event){
+            event.preventDefault();
+            var form = $(this);
+            var nombre = form.find('input[name="nombre"]').val();
+            var apellido = form.find('input[name="apellido"]').val();
+            var procesado = form.find('input[name="procesado"]').val();
+            var url = 'http://localhost:8080/FormularioPersona';
+            var jsonString = JSON.stringify({nombre: nombre, apellido: apellido,procesado: procesado});
+            console.log(jsonString);
+            $.ajax({
+                type : 'POST',
+                url : url,
+                contentType: 'application/json',
+                data : jsonString,	
+                success : function(data, status, xhr){
+                	alert("Persona agregada correctamente");
+                	document.getElementById("formulario").reset();
+                },
+                error: function(xhr, status, error){
+                  alert(error);
+                }
+            });
+        });
+</script>
+</body>
+</html>

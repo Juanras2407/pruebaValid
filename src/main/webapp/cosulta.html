@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<meta content="utf-8" http-equiv="encoding">
+<title>Datos Personas</title>
+<link href="../css/bootstrap.css" rel="stylesheet"
+	th:href="@{/css/bootstrap.css}">
+<style>
+	th{
+	width:100px;
+	align:"center";
+	}
+	body{
+	margin:5% 30%;
+	align:"center";
+	}
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body>
+<br>
+<br>
+	<div id="container">
+		<h1 align="center">Personas</h1>
+		<br>
+		<br>
+		<div id="datosPersona" class="container"></div>
+		<table id="table" class="table table-bordered"></table>
+	</div>
+</body>
+
+<script>
+window.onload= function()	{
+            
+            var url = 'http://localhost:8080/FormularioPersona';
+            $.ajax({
+                type : 'GET',
+                url : url,
+                contentType: 'application/json',
+                success : function(data, status, xhr){
+                	$("#table").append('<tr>'+
+                			'<th>Id</th>'+
+                			'<th>Nombre</th>'+
+                		    '<th>Apellido </th>' + 
+                		    '<th>Estado </th>' + 
+                		    '<th>  </th>' + 
+                		    '<th>  </th>');
+                	for (var i = 0; i < data.length; i++) {
+                       
+                        $("#table").append('<tr id="fila'+data[i].id+'">'+
+                        		'</td>'+'<td align="left">' + data[i].id + 
+                        		'</td>'+'<td align="left">' + data[i].nombre + 
+                        		'</td>'+'<td align="leftr">' + data[i].apellido +
+                        		'</td>'+'<td align="left">' + data[i].procesado +
+                        		'</td>'+'<td align="left">' + '<button type="submit" id="procesar" name="procesar" class="btn btn-primary" onclick="proc(fila'+data[i].id+')">Procesar</button>' + '</td>'+
+                        		'</td>'+'<td align="left">' + '<button type="submit" id="eliminar" name="eliminar" class="btn btn-danger" onclick="elim(fila'+data[i].id+')">Eliminar</button>' + '</td>');
+                      }
+                },
+                error: function(xhr, status, error){
+                  alert(error);
+                }
+            });
+}
+
+function proc(fila){
+	 var id = document.getElementById(fila.id).cells[0].innerHTML;
+	 console.log(id);
+     var nombre = document.getElementById(fila.id).cells[1].innerHTML;
+     console.log(nombre);
+     var apellido = document.getElementById(fila.id).cells[2].innerHTML;
+     console.log(apellido);
+     var url = 'http://localhost:8080/FormularioPersona';
+     var jsonString = JSON.stringify({id:id,nombre: nombre, apellido: apellido});
+     console.log(jsonString);
+    $.ajax({
+        type : 'PUT',
+        url : url,
+        contentType: 'application/json',
+        data : jsonString,	
+        success : function(data, status, xhr){
+     	   alert("Registro procesado")
+       		location.reload();
+        },
+        error: function(xhr, status, error){
+          alert(error);
+        }
+  
+    });
+}
+
+function elim(fila){
+	var id = document.getElementById(fila.id).cells[0].innerHTML;
+	console.log(id);
+    var url = 'http://localhost:8080/FormularioPersona';
+    var jsonString = JSON.stringify({id:id});
+    console.log(jsonString);
+   $.ajax({
+       type : 'DELETE',
+       url : url,
+       contentType: 'application/json',
+       data : jsonString,	
+       success : function(data, status, xhr){
+    	   alert("Registro eliminado")
+    	   location.reload();
+       },
+       error: function(xhr, status, error){
+         alert(error);
+       }
+ 
+   });
+}
+</script>
+</html>
